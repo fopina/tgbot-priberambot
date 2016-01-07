@@ -72,9 +72,8 @@ def build_parser():
     parser.add_argument('--create_db', dest='create_db', action='store_const',
                         const=True, default=False,
                         help='setup database')
-
     parser.add_argument('--token', '-t', dest='token',
-                        help='use webhooks (instead of polling) - requires bottle')
+                        help='token provided by @BotFather')
 
     return parser
 
