@@ -19,7 +19,7 @@ class PriberamPlugin(TGPluginBase):
 
     def list_commands(self):
         return (
-            TGCommandBase('priberam', self.priberam, 'significado duma palavra'),
+            TGCommandBase('priberam', self.priberam, 'Ver o significado duma palavra'),
         )
 
     def priberam(self, message, text):
