@@ -22,9 +22,9 @@ class PriberamPlugin(TGPluginBase):
             TGCommandBase('priberam', self.priberam, 'significado duma palavra'),
         )
 
-    def priberam(self, bot, message, text):
+    def priberam(self, message, text):
         if not text:
-            m = bot.send_message(
+            m = self.bot.send_message(
                 message.chat.id,
                 'Qual palavra?',
                 reply_to_message_id=message.message_id,
@@ -69,4 +69,4 @@ class PriberamPlugin(TGPluginBase):
             res = res.strip()
             res = re.sub(r'\n\s*\n+', '\n', res)
 
-        bot.send_message(message.chat.id, res)
+        self.bot.send_message(message.chat.id, res)
