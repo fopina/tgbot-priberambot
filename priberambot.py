@@ -19,23 +19,6 @@ def setup(db_url=None, token=None):
     return tg
 
 
-def openshift_app():
-    import os
-
-    bot = setup(
-        db_url='postgresql://%s:%s/%s' % (
-            os.environ['OPENSHIFT_POSTGRESQL_DB_HOST'],
-            os.environ['OPENSHIFT_POSTGRESQL_DB_PORT'],
-            os.environ['PGDATABASE']
-        ),
-        token=os.environ['TGTOKEN']
-    )
-    bot.set_webhook('https://%s/update/%s' % (os.environ['OPENSHIFT_APP_DNS'], bot._token))
-
-    from tgbot.webserver import wsgi_app
-    return wsgi_app(bot)
-
-
 def main():
     parser = build_parser()
     args = parser.parse_args()
@@ -60,7 +43,7 @@ def main():
 def build_parser():
     parser = argparse.ArgumentParser(description='Run PriberamBot')
 
-    parser.add_argument('--polling', '-p', dest='polling', type=int, default=2,
+    parser.add_argument('--polling', '-p', dest='polling', type=float, default=2,
                         help='interval (in seconds) to check for message updates')
     parser.add_argument('--db_url', '-d', dest='db_url', default='sqlite:///bot.sqlite3',
                         help='URL for database (default is sqlite:///bot.sqlite3)')
