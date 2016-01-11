@@ -2,7 +2,7 @@
 # coding=utf-8
 
 import tgbot
-from plugins import priberam
+from plugins import priberam, intro
 import argparse
 from requests.packages import urllib3
 urllib3.disable_warnings()
@@ -13,7 +13,10 @@ def setup(db_url=None, token=None):
         token,
         plugins=[
             priberam.PriberamPlugin(),
+            intro.IntroPlugin(),
         ],
+        no_command=priberam.PriberamPlugin(),
+        inline_query=priberam.PriberamPlugin(),
         db_url=db_url,
     )
     return tg

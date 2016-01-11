@@ -1,10 +1,11 @@
 # coding=utf-8
 from tgbot.pluginbase import TGPluginBase, TGCommandBase
-from twx.botapi import ForceReply
+from tgbot.botapi import ForceReply, InlineQueryResultArticle
 import requests
 import re
 import HTMLParser
 import xml.etree.ElementTree as ET
+from tgbot.tgbot import ChatAction
 
 
 class PriberamPlugin(TGPluginBase):
@@ -23,6 +24,7 @@ class PriberamPlugin(TGPluginBase):
         )
 
     def priberam(self, message, text):
+        self.bot.send_chat_action(message.chat.id, ChatAction.TEXT)
         if not text:
             m = self.bot.send_message(
                 message.chat.id,
@@ -33,9 +35,41 @@ class PriberamPlugin(TGPluginBase):
             self.need_reply(self.priberam, message, out_message=m, selective=True)
             return
 
-        res = requests.post(
-            'http://services.flip.pt/dlpo2transformsac/dlpo_format.asmx',
-            data='''\
+        res = self._lookup(text)
+
+        self.bot.send_message(message.chat.id, res)
+
+    def chat(self, message, text):
+        if not text:
+            return
+        if message.chat.type == "private":
+            self.priberam(message, text)
+        else:
+            self.priberam(message, text.replace(self.bot.username, ''))
+
+    def inline_query(self, inline_query):
+        if not inline_query.offset and inline_query.query:
+            res = requests.get(
+                'http://priberam.pt/desktopmodules/EVD_dicionarioshortcut/palavraautocomplete.aspx',
+                params={'q': inline_query.query},
+            )
+            results = []
+
+            for x in res.text.split('\n'):
+                if x:
+                    x = x.split('|')[0]
+                    r = self._lookup(x)
+                    if len(r) > 510:
+                        r = r[:506] + '\n(...)'
+                    results.append(InlineQueryResultArticle(x, x, r))
+
+            self.bot.answer_inline_query(inline_query.id, results, cache_time=1)
+
+    def _lookup(self, word):
+        try:
+            res = requests.post(
+                'http://services.flip.pt/dlpo2transformsac/dlpo_format.asmx',
+                data='''\
 <?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
 <soap:Body>
@@ -45,19 +79,19 @@ class PriberamPlugin(TGPluginBase):
 <acordo>false</acordo>
 <lid>2070</lid></Define>
 </soap:Body>
-</soap:Envelope>''' % text.encode('ascii', 'xmlcharrefreplace'),
-            headers={
-                'Content-Type': 'text/xml; charset=utf-8',
-                'SOAPAction': 'http://services.priberam.pt/Define',
-                'User-Agent': 'Dicionario/2.1.0 CFNetwork/711.4.6 Darwin/14.0.0',
-            }
-        )
-        root = ET.fromstring(res.content)
-        res = self.unescaper.unescape(root[0][0][0].text)
+</soap:Envelope>''' % word.encode('ascii', 'xmlcharrefreplace'),
+                headers={
+                    'Content-Type': 'text/xml; charset=utf-8',
+                    'SOAPAction': 'http://services.priberam.pt/Define',
+                    'User-Agent': 'Dicionario/2.1.0 CFNetwork/711.4.6 Darwin/14.0.0',
+                }
+            )
+            root = ET.fromstring(res.content)
+            res = self.unescaper.unescape(root[0][0][0].text)
 
-        if u'Sugerir a inclusão no dicionário</a> da palavra pesquisada.' in res:
-            res = u'Palavra não encontrada'
-        else:
+            if u'Sugerir a inclusão no dicionário</a> da palavra pesquisada.' in res:
+                raise Exception()
+
             res = res.replace('<br />', '\n')
             res = res.replace('<span', '\n<span')
             res = res.replace('</Categoria>', '\n')
@@ -69,4 +103,7 @@ class PriberamPlugin(TGPluginBase):
             res = res.strip()
             res = re.sub(r'\n\s*\n+', '\n', res)
 
-        self.bot.send_message(message.chat.id, res)
+        except:
+            res = u'Palavra não encontrada'
+
+        return res

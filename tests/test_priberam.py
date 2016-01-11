@@ -1,7 +1,9 @@
 # coding=utf-8
 from tgbot import plugintest
-from twx.botapi import Update
+from tgbot.botapi import Update
 from plugins.priberam import PriberamPlugin
+from requests.packages import urllib3
+urllib3.disable_warnings()
 
 
 class PriberamPluginTest(plugintest.PluginTestCase):
