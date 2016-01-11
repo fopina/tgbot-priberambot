@@ -31,10 +31,7 @@ class PriberamPluginTest(plugintest.PluginTestCase):
 
         self.receive_message(u'cerveja')
         self.assertReplied(self.bot, u'''\
-cerveja
- | s. f.
-cerveja \n\
- |â ou ê ou âi|
+cerveja |â ou ê ou âi| \n\
 s. f.
 Bebida levemente alcoólica, feita de cevada e lúpulo.\
 ''')
@@ -46,21 +43,15 @@ Bebida levemente alcoólica, feita de cevada e lúpulo.\
     def test_complex(self):
         self.receive_message(u'/priberam anão')
         self.assertReplied(self.bot, u'''\
-anão
- | adj.
- | s. m.
 anão \n\
 adj.
 adj.
-1.
- Que tem estatura muito menor que a regular.
-2.
- [Figurado]
- [Figurado]
- Que não é digno de menção.
+1. Que tem estatura muito menor que a regular.
+2. \n\
+ [Figurado] \n\
+Que não é digno de menção.
 s. m.
-3.
- Indivíduo cuja estatura é inferior à dos homens em geral.
+3. Indivíduo cuja estatura é inferior à dos homens em geral.
 Feminino: anã. Plural: anãos ou anões.\
 ''')
 

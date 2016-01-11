@@ -10,8 +10,9 @@ from tgbot.tgbot import ChatAction
 
 class PriberamPlugin(TGPluginBase):
     TAG_RE = re.compile(r'<[^>]+>')
-    BR_RE = re.compile(r'<span class="varpb">.*?<\/span>')
+    BR_RE = re.compile(r'<span class="varpb">.*?<\/span>', re.DOTALL)
     CLEAN_RE = re.compile(r'<span.*?>Copyright.*?<\/span>')
+    FSTDIV_RE = re.compile(r'<div style="background-color:#eee; border-color:#cccccc">.*?<\/div>', re.DOTALL)
     DBL_SPACE_RE = re.compile(r' +')
 
     def __init__(self):
@@ -37,7 +38,7 @@ class PriberamPlugin(TGPluginBase):
 
         res = self._lookup(text)
 
-        self.bot.send_message(message.chat.id, res)
+        self.bot.send_message(message.chat.id, res, parse_mode='Markdown')
 
     def chat(self, message, text):
         if not text:
@@ -86,12 +87,15 @@ class PriberamPlugin(TGPluginBase):
                     'User-Agent': 'Dicionario/2.1.0 CFNetwork/711.4.6 Darwin/14.0.0',
                 }
             )
+
             root = ET.fromstring(res.content)
             res = self.unescaper.unescape(root[0][0][0].text)
 
             if u'Sugerir a inclusão no dicionário</a> da palavra pesquisada.' in res:
                 raise Exception()
 
+            res = PriberamPlugin.FSTDIV_RE.sub('', res)
+            res = res.replace('\n', '')
             res = res.replace('<br />', '\n')
             res = res.replace('<span', '\n<span')
             res = res.replace('</Categoria>', '\n')
