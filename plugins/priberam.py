@@ -96,7 +96,7 @@ class PriberamPlugin(TGPluginBase):
 
             res = self._parse(res.encode('utf-16'))
 
-        except Exception as e:
+        except:
             res = u'Palavra não encontrada'
 
         return res
