@@ -62,7 +62,7 @@ class PriberamPlugin(TGPluginBase):
                     r = self._lookup(x)
                     if len(r) > 510:
                         r = r[:506] + '\n(...)'
-                    results.append(InlineQueryResultArticle(x, x, r))
+                    results.append(InlineQueryResultArticle(x, x, r, parse_mode='Markdown'))
 
             self.bot.answer_inline_query(inline_query.id, results, cache_time=1)
 
@@ -94,20 +94,61 @@ class PriberamPlugin(TGPluginBase):
             if u'Sugerir a inclusão no dicionário</a> da palavra pesquisada.' in res:
                 raise Exception()
 
-            res = PriberamPlugin.FSTDIV_RE.sub('', res)
-            res = res.replace('\n', '')
-            res = res.replace('<br />', '\n')
-            res = res.replace('<span', '\n<span')
-            res = res.replace('</Categoria>', '\n')
-            res = PriberamPlugin.CLEAN_RE.sub('', res)
-            res = PriberamPlugin.BR_RE.sub('', res)
-            res = PriberamPlugin.TAG_RE.sub('', res)
-            res = PriberamPlugin.DBL_SPACE_RE.sub(' ', res)
-            res = res.replace(u'\xa0', '')
-            res = res.strip()
-            res = re.sub(r'\n\s*\n+', '\n', res)
+            res = self._parse(res.encode('utf-16'))
 
-        except:
+        except Exception as e:
             res = u'Palavra não encontrada'
 
         return res
+
+    def _parse(self, xml):
+        root = ET.fromstring(xml)
+        word = root[3][0][0][0].text
+
+        def _clear_node(n):
+            n.attrib = {}
+            n._children = []
+            n.text = ''
+
+        map(_clear_node, root.findall('.//*[@class="varpb"]'))
+        map(_clear_node, root.findall('.//*[@class="dAO"]'))
+
+        for n in root.findall('.//*[@style]'):
+            if 'visibility:hidden' in n.attrib['style']:
+                _clear_node(n)
+
+        t = ''
+        tag = ''
+        for c in root[3][0][1:]:
+            if c.tag == 'span':
+                if len(c) > 0:
+                    t += '_%s_\n' % c[0].attrib.get('title')
+            elif c.tag == 'div':
+                if c.text:
+                    t += '%s\n' % c.text.strip()
+                else:
+                    prefix = ''
+                    tail = ''
+                    for d in c:
+                        if tail:
+                            tail += ' ' + ' '.join(x.strip() for x in d.itertext())
+                        else:
+                            prefix += ' '.join(x.strip() for x in d.itertext()) + ' '
+
+                        if d.tail:
+                            tail += d.tail.strip()
+
+                    if prefix:
+                        t += '`%s`' % re.sub('\s+', ' ', prefix.strip())
+
+                    t += '%s\n' % re.sub('\s+', ' ', tail.strip())
+            else:
+                tag += ' '.join(x.strip() for x in c.itertext()) + ' '
+                if c.tail:
+                    tag += c.tail.strip() + ' '
+
+        f = '*%s*\n' % (word)
+        if tag.strip():
+            f += tag + '\n'
+        f += t
+        return f
