@@ -24,6 +24,9 @@ You can also use me inline in any other chat by just typing *@priberambot WORD*
 _Example:_
 _@priberambot Limítrofe_
 
+Do not forget to rate me!
+https://telegram.me/storebot?start=priberambot
+
             ''',
             parse_mode='Markdown'
         )

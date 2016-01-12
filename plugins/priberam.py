@@ -64,7 +64,7 @@ class PriberamPlugin(TGPluginBase):
                         r = r[:506] + '\n(...)'
                     results.append(InlineQueryResultArticle(x, x, r, parse_mode='Markdown'))
 
-            self.bot.answer_inline_query(inline_query.id, results, cache_time=1)
+            self.bot.answer_inline_query(inline_query.id, results, cache_time=3600)
 
     def _lookup(self, word):
         try:
