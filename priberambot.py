@@ -13,7 +13,26 @@ def setup(db_url=None, token=None):
         token,
         plugins=[
             priberam.PriberamPlugin(),
-            intro.IntroPlugin(),
+            intro.IntroPlugin(
+                intro_text='''\
+    *I can help you with that weird Portuguese word you don't know...*
+
+    Just write me any word and I'll lookup its definition for you
+
+    _Example:_
+    _Limítrofe_
+
+    You can also use me inline in any other chat by just typing *@priberambot WORD*
+
+    _Example:_
+    _@priberambot Limítrofe_
+
+    Do not forget to rate me!
+    https://telegram.me/storebot?start=priberambot
+
+                ''',
+                markdown=True
+            ),
         ],
         no_command=priberam.PriberamPlugin(),
         inline_query=priberam.PriberamPlugin(),

@@ -59,6 +59,37 @@ _substantivo masculino_
             [u'bola', u'bola de cristal', u'bola de gude', u'bola de neve', u'bola-ao-cesto', u'bolacha', u'bolachada', u'bolacheira']
         )
 
+    def test_chat(self):
+        self.receive_message(u'cerveja')
+        self.assertReplied(self.bot, u'''\
+*cerveja*
+_substantivo feminino_
+Bebida levemente alcoólica, feita de cevada e lúpulo.
+''')
+
+    def test_chat_group(self):
+        chat = {
+            'id': 1,
+            'title': 'test group',
+            'type': 'group',
+        }
+        self.receive_message(u'cerveja', chat=chat)
+        self.assertReplied(self.bot, u'''\
+*cerveja*
+_substantivo feminino_
+Bebida levemente alcoólica, feita de cevada e lúpulo.
+''')
+
+    def test_chat_group_no_text(self):
+        chat = {
+            'id': 1,
+            'title': 'test group',
+            'type': 'group',
+        }
+        self.receive_message(u'', chat=chat)
+        # no replies
+        self.assertRaises(AssertionError, self.last_reply, self.bot)
+
     def receive_message(self, text, sender=None, chat=None):
         if sender is None:
             sender = {
@@ -68,7 +99,8 @@ _substantivo masculino_
             }
 
         if chat is None:
-            chat = sender
+            chat = {'type': 'private'}
+            chat.update(sender)
 
         self.bot.process_update(
             Update.from_dict({
