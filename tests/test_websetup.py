@@ -49,9 +49,9 @@ class WebTest(plugintest.PluginTestCase):
     def test_web(self):
         self.assertEqual(len(FakeTelegramBotRPCRequest.QUEUE), 0)
         self.webapp.post_json('/update/123', params=self.build_update(u'hello'))
-        self.assertEqual(len(FakeTelegramBotRPCRequest.QUEUE), 3)
-        self.assertEqual(FakeTelegramBotRPCRequest.QUEUE[2][0], 'sendMessage')
-        self.assertEqual(FakeTelegramBotRPCRequest.QUEUE[2][1]['text'], u'Palavra não encontrada')
+        self.assertTrue(len(FakeTelegramBotRPCRequest.QUEUE))
+        self.assertEqual(FakeTelegramBotRPCRequest.QUEUE[-1][0], 'sendMessage')
+        self.assertEqual(FakeTelegramBotRPCRequest.QUEUE[-1][1]['text'], u'Palavra não encontrada')
 
     def build_update(self, text, sender=None, chat=None, reply_to_message_id=None):
         if sender is None:
