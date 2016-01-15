@@ -60,9 +60,15 @@ class PriberamPlugin(TGPluginBase):
                 if x:
                     x = x.split('|')[0]
                     r = self._lookup(x)
+                    # do not include words without definition...
+                    if r == u'Palavra não encontrada':
+                        continue
                     if len(r) > 510:
                         r = r[:506] + '\n(...)'
                     results.append(InlineQueryResultArticle(x, x, r, parse_mode='Markdown'))
+                    # limit to 5 results to avoid looking up too many definitions...
+                    if len(results) == 5:
+                        break
 
             self.bot.answer_inline_query(inline_query.id, results, cache_time=3600)
 

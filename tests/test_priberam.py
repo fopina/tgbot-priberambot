@@ -56,7 +56,7 @@ _substantivo masculino_
         results = self.last_reply(self.bot)
         self.assertEqual(
             [x.title for x in results],
-            [u'bola', u'bola de cristal', u'bola de gude', u'bola de neve', u'bola-ao-cesto', u'bolacha', u'bolachada', u'bolacheira']
+            [u'bola', u'bola de cristal', u'bola de neve', u'bola-ao-cesto', u'bolacha']
         )
 
     def test_chat(self):
