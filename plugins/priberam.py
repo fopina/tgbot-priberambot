@@ -2,19 +2,13 @@
 from tgbot.pluginbase import TGPluginBase, TGCommandBase
 from tgbot.botapi import ForceReply, InlineQueryResultArticle
 import requests
-import re
 import HTMLParser
+import re
 import xml.etree.ElementTree as ET
 from tgbot.tgbot import ChatAction
 
 
 class PriberamPlugin(TGPluginBase):
-    TAG_RE = re.compile(r'<[^>]+>')
-    BR_RE = re.compile(r'<span class="varpb">.*?<\/span>', re.DOTALL)
-    CLEAN_RE = re.compile(r'<span.*?>Copyright.*?<\/span>')
-    FSTDIV_RE = re.compile(r'<div style="background-color:#eee; border-color:#cccccc">.*?<\/div>', re.DOTALL)
-    DBL_SPACE_RE = re.compile(r' +')
-
     def __init__(self):
         super(PriberamPlugin, self).__init__()
         self.unescaper = HTMLParser.HTMLParser()
