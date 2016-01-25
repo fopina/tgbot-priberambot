@@ -32,15 +32,15 @@ class PriberamPlugin(TGPluginBase):
 
         res = self._lookup(text)
 
-        self.bot.send_message(message.chat.id, res, parse_mode='Markdown')
+        return self.bot.return_message(message.chat.id, res, parse_mode='Markdown')
 
     def chat(self, message, text):
         if not text:
             return
         if message.chat.type == "private":
-            self.priberam(message, text)
+            return self.priberam(message, text)
         else:
-            self.priberam(message, text.replace(self.bot.username, ''))
+            return self.priberam(message, text.replace(self.bot.username, ''))
 
     def inline_query(self, inline_query):
         if not inline_query.offset and inline_query.query:

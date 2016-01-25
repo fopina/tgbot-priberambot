@@ -1,5 +1,5 @@
 #-e git+https://github.com/fopina/tgbotplug/@v1.2.3#egg=tgbotplug
 
-tgbotplug==1.2.8
+tgbotplug==1.2.10
 bottle==0.12.8
 psycopg2==2.6.1
