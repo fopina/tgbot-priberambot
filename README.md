@@ -1,4 +1,4 @@
-TThis is a Telegram bot that will lookup up a portuguese word in [Priberam](http://priberam.pt), a portuguese dictionary.   Feel free to use it by talking to [@PriberamBot](http://telegram.me/priberambot).
+xThis is a Telegram bot that will lookup up a portuguese word in [Priberam](http://priberam.pt), a portuguese dictionary.   Feel free to use it by talking to [@PriberamBot](http://telegram.me/priberambot).
 
 [![Build Status](https://travis-ci.org/fopina/tgbot-buttiebot.svg?branch=master)](https://travis-ci.org/fopina/tgbot-buttiebot) [![Coverage Status](https://coveralls.io/repos/fopina/tgbot-priberambot/badge.svg?branch=master&service=github)](https://coveralls.io/github/fopina/tgbot-priberambot?branch=master)
 
