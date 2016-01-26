@@ -1,6 +1,6 @@
 # coding=utf-8
 from tgbot.pluginbase import TGPluginBase, TGCommandBase
-from tgbot.botapi import ForceReply, InlineQueryResultArticle
+from tgbot.botapi import ForceReply, InlineQueryResultArticle, Error
 import requests
 import HTMLParser
 import re
@@ -27,7 +27,10 @@ class PriberamPlugin(TGPluginBase):
                 reply_to_message_id=message.message_id,
                 reply_markup=ForceReply.create(selective=True)
             ).wait()
-            self.need_reply(self.priberam, message, out_message=m, selective=True)
+            if isinstance(m, Error):
+                print 'ERROR:', m
+            else:
+                self.need_reply(self.priberam, message, out_message=m, selective=True)
             return
 
         res = self._lookup(text)
