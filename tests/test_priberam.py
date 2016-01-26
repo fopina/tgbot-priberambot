@@ -2,9 +2,6 @@
 from tgbot import plugintest
 from plugins.priberam import PriberamPlugin
 
-from requests.packages import urllib3
-urllib3.disable_warnings()
-
 
 class PriberamPluginTest(plugintest.PluginTestCase):
     def setUp(self):
