@@ -4,6 +4,7 @@
 import tgbot
 from plugins import priberam, intro
 import argparse
+import os
 
 
 def setup(db_url=None, token=None):
@@ -39,9 +40,23 @@ def setup(db_url=None, token=None):
     return tg
 
 
+def file_or_value(arg):
+    if not arg:
+        return arg
+    try:
+        os.stat(arg)
+        with open(arg, 'r') as f:
+            return f.read().strip()
+    except OSError:
+        return arg
+
+
 def main():
     parser = build_parser()
     args = parser.parse_args()
+
+    args.token = file_or_value(args.token)
+    args.db_url = file_or_value(args.db_url)
 
     tg = setup(db_url=args.db_url, token=args.token)
 
