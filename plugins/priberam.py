@@ -28,7 +28,7 @@ class PriberamPlugin(TGPluginBase):
                 reply_markup=ForceReply.create(selective=True)
             ).wait()
             if isinstance(m, Error):
-                print 'ERROR:', m
+                print('ERROR:', m)
             else:
                 self.need_reply(self.priberam, message, out_message=m, selective=True)
             return
