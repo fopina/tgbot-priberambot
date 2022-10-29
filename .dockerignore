@@ -1,0 +1,12 @@
+**/*.pyc
+*.md
+**/__pycache__
+**/*.jpg
+**/*.sqlite3
+/.devcontainer
+Procfile
+**/*.cfg
+/tests
+/.github
+/.git
+/Dockerfile
