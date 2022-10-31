@@ -1,0 +1,4 @@
+-r requirements.txt
+gevent==1.2.2
+greenlet==0.4.12
+gunicorn==19.7.1

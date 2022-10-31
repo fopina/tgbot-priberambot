@@ -75,6 +75,16 @@ def main():
         tg.run_web(args.webhook[0], host='0.0.0.0', port=int(args.webhook[1]))
 
 
+def web_app(token, db_url, webhook):
+    bot = setup(token, db_url)
+    if webhook[-1] != '/':
+        webhook += '/'
+    bot.set_webhook('https://%supdate/%s' % (webhook, bot.token))
+
+    from tgbot.webserver import wsgi_app
+    return wsgi_app([bot])
+
+
 def build_parser():
     parser = argparse.ArgumentParser(description='Run PriberamBot')
 

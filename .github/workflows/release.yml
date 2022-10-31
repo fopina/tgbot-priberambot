@@ -12,7 +12,5 @@ jobs:
         with:
           python-version: '2.7'
           cache: 'pip'
-      - run: |
-          pip install -r requirements.txt
-          pip install coveralls webtest nose
+      - run: pip install -r requirements_test.txt
       - run: nosetests
