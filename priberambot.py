@@ -76,7 +76,7 @@ def main():
 
 
 def web_app(token, db_url, webhook):
-    bot = setup(token, db_url)
+    bot = setup(db_url=db_url, token=token)
     if webhook[-1] != '/':
         webhook += '/'
     bot.set_webhook('https://%supdate/%s' % (webhook, bot.token))
